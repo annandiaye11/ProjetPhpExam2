@@ -10,7 +10,10 @@ class FournisseurModel extends Model
     }
     public function findAll(): array
     {
-        return $this->executeSelect("SELECT * FROM `fournisseur`;");
+        return $this->executeSelect("SELECT * FROM `Fournisseur`;");
+    }
+    public function findOneById(int $id): array {
+        return $this->executeSelect("SELECT * FROM `Fournisseur` WHERE  id = $id", false);
     }
     // public function save($data): int|bool
     // {
@@ -23,7 +26,7 @@ class FournisseurModel extends Model
     //         return false;
     //     }
     // }
-    // public function findByName(string $name): array | bool {
-    //     return $this->executeSelect("SELECT * FROM `Type` t WHERE t.nomType = '$name'", false);
-    // }
+    public function findByTel(string $tel): array | bool {
+        return $this->executeSelect("SELECT * FROM `Fournisseur` f WHERE f.telephone = $tel", false);
+    }
 }

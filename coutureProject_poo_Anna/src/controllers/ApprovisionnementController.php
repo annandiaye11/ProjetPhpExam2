@@ -31,7 +31,6 @@ class ApprovisionnementController extends Controller
 
     public function load()
     {
-        // print_r($_SESSION);
         if (isset($_GET['action'])) {
             if ($_GET['action'] == "liste-appro") {
                 $this->listAppro();
@@ -41,26 +40,9 @@ class ApprovisionnementController extends Controller
             }else if ($_GET["action"] == "add-appro") {
                 $this->ajouterAppro();
             }
-            else if (str_contains($_GET["action"], "suppr_")) {
-                $id = intval(substr($_GET["action"], strlen("suppr_"), strlen($_GET["action"]) - strlen("suppr_")));
-                $this->suppr($id);
-            } else if (str_contains($_GET["action"], "edit_")) {
-                $id = intval(substr($_GET["action"], strlen("edit_"), strlen($_GET["action"]) - strlen("edit_")));
-                $this->formAppro($id);
-            }
         } elseif (isset($_POST["action"])) {
-            if ($_POST["action"] == "create") {
-                // unset($_POST["action"]);
-                // if ($_POST["id"] == '') {
-                //     $this->create($_POST);
-                // } else {
-                //     $id = intval($_POST['id']);
-                //     unset($_POST['id']);
-                //     $this->edit($id, $_POST);
-                // }
-            } else if ($_POST["action"] == "add-articleappro") {
+            if ($_POST["action"] == "add-articleappro") {
                 $this->ajouterArticleAppro($_POST);
-               
             } 
         } else {
             $this->listAppro();
@@ -75,9 +57,11 @@ class ApprovisionnementController extends Controller
     }
     public function formAppro($id = null)
     { 
-        $this->render("appros/form", [
+        $datas = $this->articleModel->findAll(0, 500);
+        $articles = $datas["articles"];
+        $this->render("appros/form1", [
             "fournisseurs" => $this->fournisseurModel->findAll(),
-            "articles" => $this->articleModel->findAll(),
+            "articles" => $articles,
         ]);
     }
     public function ajouterArticleAppro(array $data)

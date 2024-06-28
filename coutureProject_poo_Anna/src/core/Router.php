@@ -2,6 +2,7 @@
 namespace Anna\core;
 
 use Anna\Controllers\ApprovisionnementController;
+use Anna\Controllers\FournisseurController;
 use Anna\Controllers\TypeController;
 use Anna\Controllers\ArticleController;
 use Anna\Controllers\SecuriteController;
@@ -27,6 +28,8 @@ class Router
             }elseif ($_REQUEST["controller"] == "login") {
                 
                 $controller = new SecuriteController();
+            } elseif ($_REQUEST["controller"] == "fournisseur") {
+                $controller = new FournisseurController();
             } else {
                
                 $controller = new ArticleController();

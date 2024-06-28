@@ -11,7 +11,7 @@ class ApprovisionnementModel extends Model
     }
     public function findAll(): array
     {
-        return $this->executeSelect("SELECT * FROM `Appo`;");
+        return $this->executeSelect("SELECT a.*,f.* FROM `Appo` a JOIN Fournisseur f ON f.id = a.idFour ;");
     }
     public function save(PanierModel $panier): int
     {
@@ -26,9 +26,9 @@ class ApprovisionnementModel extends Model
                 $qteStock = $article['qteStock'];
                 $idArticle = $article['id'];
                 $idAppro = $this->conn->lastInsertId();
-                $sql = "INSERT INTO `detail` (`qte`, `idArticle`, `idAppro`) VALUES ($qteAppro, $idArticle, $idAppro);";
+                $sql = "INSERT INTO `Detail` (`approId`, `articleId`, `qteAppro`) VALUES ($idAppro, $idArticle, $qteAppro);";
                 $this->conn->exec($sql);
-                $sql = "UPDATE 'article' SET `qteStock` = $qteStock+$qteAppro WHERE article.id = $idArticle;";
+                $sql = "UPDATE 'Article' SET `qteStock` = $qteStock+$qteAppro WHERE Article.id = $idArticle;";
             }
         } catch (\PDOException $e) {
             echo $e->getMessage();

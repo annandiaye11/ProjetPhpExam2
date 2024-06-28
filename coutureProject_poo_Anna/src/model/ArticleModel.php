@@ -2,6 +2,7 @@
 namespace Anna\Model;
 
 use Anna\Core\Model;
+
 // require_once ("../core/model.php");
 class ArticleModel extends Model
 {
@@ -9,7 +10,7 @@ class ArticleModel extends Model
     {
         $this->openConn();
     }
-    public function  findAll(): array
+    public function findAll($page = 0, $offset = 2): array
     {
         $sql = "SELECT 
         a.*,
@@ -28,11 +29,22 @@ class ArticleModel extends Model
     JOIN 
         Categorie c ON a.categoryId = c.id
     JOIN 
-        Type t ON a.typeId = t.id;
+        Type t ON a.typeId = t.id
+    LIMIT $page, $offset
     ";
-        return $this->executeSelect($sql);
+
+    $snd_sql = "SELECT count(*) as `nbreArticle` FROM Article;";
+    $result = $this->executeSelect($snd_sql);
+
+    $r = $this->executeSelect($sql);
+        return [
+            "totalElements" => count($r),
+            "articles" => $r,
+            "pages" => ceil(count($r)/$offset)
+        ];
+        
     }
-    public function  findBy(int $id): array
+    public function findBy(int $id): array
     {
         $sql = "SELECT 
         a.*  
@@ -40,7 +52,7 @@ class ArticleModel extends Model
         Article a
     WHERE id=$id;
     ";
-        return $this->executeSelect($sql,true);
+        return $this->executeSelect($sql, true);
     }
     public function save(array $data): void
     {
@@ -54,21 +66,23 @@ class ArticleModel extends Model
         }
     }
 
-    public function delete(int $id): void {
+    public function delete(int $id): void
+    {
         try {
             $sql = "DELETE FROM `Article` WHERE `Article`.`id` = $id ";
             $this->conn->exec($sql);
-        }catch (\PDOException $e) {
+        } catch (\PDOException $e) {
             echo "erreur lors de la suppression : " . $e->getMessage();
         }
     }
-    
-    public function update(int $id, array $data): void {
+
+    public function update(int $id, array $data): void
+    {
         try {
             extract($data);
             $sql = "UPDATE `Article` SET `nomArticle` = '$nomArticle', `prixAppro` = '$prixAppro', `qteStock` = '$qteStock', `categoryId` = '$categoryId', `typeId` = '$typeId' WHERE `Article`.`id` = $id;";
             $this->conn->exec($sql);
-        }catch (\PDOException $e) {
+        } catch (\PDOException $e) {
             echo "erreur lors de la suppression : " . $e->getMessage();
         }
     }

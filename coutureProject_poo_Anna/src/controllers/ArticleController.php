@@ -29,7 +29,11 @@ class ArticleController extends Controller
     {
         if (isset($_GET['action'])) {
             if ($_GET['action'] == "liste") {
-                $this->list();
+                if (isset($_GET['page'])) {
+                    $this->list($_GET['page']*OFFSET);
+                } else {
+                    $this->list();
+                }
             } else if ($_GET["action"] == "form") {
                 $this->form();
             } else if (str_contains($_GET["action"], "suppr_")) {
@@ -54,13 +58,16 @@ class ArticleController extends Controller
             $this->list();
         }
     }
-    public function list()
+    public function list($page=0)
     {
-        $articles = $this->articleModel->findAll();
+        $datas = $this->articleModel->findAll($page);
+        $articles = $datas["articles"];
+        $nbrePage = $datas["totalElements"];
         $this->render(
             "articles/list",
             array(
-                "articles" => $articles
+                "articles" => $articles,
+                "nbrePage"=> $nbrePage,
             )
         );
     }
